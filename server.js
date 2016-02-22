@@ -2,14 +2,22 @@
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const session = require('express-session')
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SESSION_SECRET = process.env.SESSION_SECRET || 'supersecret'
 
+//middleware
 app.set('view engine', 'jade');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(session({
+  secret: SESSION_SECRET
+}));
+
+//routes
 app.get('/', (req, res) => {
   res.render('index');
 });
