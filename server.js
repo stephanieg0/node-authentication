@@ -2,11 +2,12 @@
 
 const bodyParser = require('body-parser');
 const express = require('express');
-const session = require('express-session')
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SESSION_SECRET = process.env.SESSION_SECRET || 'supersecret'
+const SESSION_SECRET = process.env.SESSION_SECRET || 'supersecret';
 
 //middleware
 app.set('view engine', 'jade');
@@ -14,8 +15,25 @@ app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
-  secret: SESSION_SECRET
+  secret: SESSION_SECRET,
+  store: new RedisStore()
 }));
+
+//app.use((req, res, next) => {
+  //req.session.count = req.session.count || 0;
+  //req.session.count++;
+  //console.log(req.session);
+  //next();
+//});
+//
+//app.use((req, res, next) => {
+  //req.session.visits = req.session.visits || {};
+  //req.session.visits[req.url] = req.session.visits[req.url] || 0;
+  //req.session.visits[req.url]++
+
+  //console.log(req.session);
+  //next();
+//});
 
 //routes
 app.get('/', (req, res) => {
