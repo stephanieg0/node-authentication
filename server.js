@@ -2,6 +2,7 @@
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const passport = require('passport');
@@ -34,13 +35,20 @@ app.use((req, res, next) => {
 });
 
 //for social logings
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
 //assigning email to user, otherwise it will be guest.
 app.use((req, res, next) => {
-  console.log(req.session);
-  res.locals.user = req.session.user || { email: 'Guest' };
+  //locals makes a variable available to jade templates
+  res.locals.user = req.user;
+  next();
+});
+//adding a message through flash
+app.use((req, res, next) => {
+  //making messages variable available to jade
+  res.locals.messages = req.flash();
   next();
 });
 
@@ -49,8 +57,10 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+//load routes
 app.use(userRoutes);
 
+//connecting to mongoose database
 mongoose.connect('mongodb://localhost:27017/nodeauth', (err) => {
   if (err) throw err;
 
