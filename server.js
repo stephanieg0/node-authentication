@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
+const passport = require('passport');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
@@ -30,7 +31,11 @@ app.use(session({
 app.use((req, res, next) => {
   if (!req.session) throw new Error('Session Error');
   next();
-})
+});
+
+//for social logings
+app.use(passport.initialize());
+app.use(passport.session());
 
 //assigning email to user, otherwise it will be guest.
 app.use((req, res, next) => {
