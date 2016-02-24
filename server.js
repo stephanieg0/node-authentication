@@ -52,6 +52,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/newPassword', (req, res, next) => {
+  console.log('middleware', req.body);
+  next();
+});
+
 //root route
 app.get('/', (req, res) => {
   res.render('index');
